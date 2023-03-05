@@ -54,5 +54,22 @@
                 :mantle "#1e2030"
                 :crust "#181926"})
 
+(defn get-color [color]
+  "Gets the appropriate color depending on NeoVim's `background` setting"
+  (let [bg (vim.opt.background:get)]
+    (if (= "light" bg)
+      (print (. latte color))
+      (= "dark" bg)
+      (print (. macchiato color)))))
+
+(defn set-highlight [group fg bg ?attr]
+  "Wrapper function to set highlight groups"
+  (let [group group
+        fg fg
+        bg bg]
+    (print "hi" group "guifg=" fg "guibg=" bg)))
+
 (defn init []
+  (set-highlight "StatusLine" "#c0ffee" "#000000")
+  (vim.cmd "hi StatusLine guifg=#c0ffee guibg=#000000 gui=NONE")
   (print "Hello, World!"))
