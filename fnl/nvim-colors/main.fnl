@@ -1,4 +1,5 @@
-(module nvim-colors.main)
+(module nvim-colors.main
+  {autoload {nvim aniseed.nvim}})
 
 (def latte {:rosewater "#dc8a78"
             :flamingo "#dd7878"
@@ -56,20 +57,22 @@
 
 (defn get-color [color]
   "Gets the appropriate color depending on NeoVim's `background` setting"
-  (let [bg (vim.opt.background:get)]
+  (let [bg (vim.opt.background:get)] 
     (if (= "light" bg)
-      (print (. latte color))
+      (. latte color)
       (= "dark" bg)
-      (print (. macchiato color)))))
+      (. macchiato color))))
 
 (defn set-highlight [group fg bg ?attr]
   "Wrapper function to set highlight groups"
   (let [group group
         fg fg
         bg bg]
-    (print "hi" group "guifg=" fg "guibg=" bg)))
+    (nvim.ex.hi (.. group " guifg=" fg " guibg=" bg))))
 
 (defn init []
-  (set-highlight "StatusLine" "#c0ffee" "#000000")
-  (vim.cmd "hi StatusLine guifg=#c0ffee guibg=#000000 gui=NONE")
-  (print "Hello, World!"))
+  (set-highlight "StatusLine" (get-color "text") (get-color "overlay2"))
+  (set-highlight "StatusLineNC" (get-color "surface2") (get-color "text")))
+
+(comment
+         (get-color "rosewater"))
