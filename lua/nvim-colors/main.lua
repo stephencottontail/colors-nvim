@@ -29,16 +29,29 @@ local function get_color(color)
 end
 _2amodule_2a["get-color"] = get_color
 local function set_highlight(group, fg, bg, _3fattr)
-  local group0 = group
-  local fg0 = fg
-  local bg0 = bg
-  return nvim.ex.hi((group0 .. " guifg=" .. fg0 .. " guibg=" .. bg0))
+  local opts
+  if (type(_3fattr) == "table") then
+    local opts0 = ""
+    for i, n in ipairs(_3fattr) do
+      opts0 = (opts0 .. n .. ",")
+    end
+    opts = opts0
+  else
+    opts = "NONE"
+  end
+  return nvim.ex.hi((group .. " guifg=" .. fg .. " guibg=" .. bg .. " gui=" .. opts))
 end
 _2amodule_2a["set-highlight"] = set_highlight
 local function init()
-  set_highlight("StatusLine", get_color("text"), get_color("overlay2"))
-  return set_highlight("StatusLineNC", get_color("surface2"), get_color("text"))
+  vim.api.nvim_set_var("colors_name", "catppuccin")
+  set_highlight("Normal", get_color("text"), get_color("base"))
+  set_highlight("Cursor", get_color("rosewater"), get_color("base"))
+  set_highlight("CursorLine", "NONE", get_color("surface0"))
+  set_highlight("StatusLine", "foreground", "background", {"inverse"})
+  set_highlight("StatusLineNC", get_color("overlay0"), "background", {"inverse"})
+  set_highlight("Search", "NONE", "NONE")
+  return set_highlight("IncSearch", get_color("base"), get_color("blue"))
 end
 _2amodule_2a["init"] = init
---[[ (get-color "rosewater") ]]
+--[[ (defn foo [?attr] (if (= (type ?attr) "table") (accumulate [result "" i n (ipairs ?attr)] (.. result n)) "nothing")) (foo ["foo" "bar"]) (foo) (set-highlight "StatusLineNC" "rebeccapurple" "#c0ff33" ["inverse" "undercurl"]) (set-highlight "StatusLine" "rebeccapurple" "#c0ffee" ["bold" "undercurl"]) (accumulate [opts "" i n (ipairs ["foo" "bar" "baz" "qux"])] (.. opts n ",")) (vim.api.nvim_get_option "termguicolors") (vim.api.nvim_set_var "colors_name" "catppuccin") (get-color "rosewater") ]]
 return _2amodule_2a

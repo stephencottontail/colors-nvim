@@ -79,8 +79,13 @@
 
 (defn init []
   (vim.api.nvim_set_var "colors_name" "catppuccin")
-  (set-highlight "StatusLine" (get-color "text") (get-color "overlay2"))
-  (set-highlight "StatusLineNC" (get-color "surface2") (get-color "text")))
+  (set-highlight "Normal" (get-color "text") (get-color "base"))
+  (set-highlight "Cursor" (get-color "rosewater") (get-color "base"))
+  (set-highlight "CursorLine" "NONE" (get-color "surface0"))
+  (set-highlight "StatusLine" "foreground" "background" ["inverse"])
+  (set-highlight "StatusLineNC" (get-color "overlay0") "background" ["inverse"])
+  (set-highlight "Search" "NONE" "NONE")
+  (set-highlight "IncSearch" (get-color "base") (get-color "blue")))
 
 (comment
   (defn foo [?attr]
