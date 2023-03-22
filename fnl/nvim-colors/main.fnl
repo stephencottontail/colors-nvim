@@ -67,11 +67,15 @@
 ;; `vim.cmd` because the latter didn't work for some dumb reason
 ;; and also the documentation for the latter is insane
 (defn set-highlight [group fg bg ?attr]
-  "Wrapper function to set highlight groups"
-  (let [group group
-        fg fg
-        bg bg]
-    (nvim.ex.hi (.. group " guifg=" fg " guibg=" bg))))
+  "Wrapper function to set highlight group GROUP with
+  foreground color FG, background color BG, and an optional
+  table of attributes ATTR (see `:help highlight-args`)" 
+  (let [opts (if (= (type ?attr) "table")
+               (accumulate [opts ""
+                            i n (ipairs ?attr)]
+                 (.. opts n ","))
+               "NONE")]
+    (nvim.ex.hi (.. group " guifg=" fg " guibg=" bg " gui=" opts))))
 
 (defn init []
   (vim.api.nvim_set_var "colors_name" "catppuccin")
@@ -79,6 +83,19 @@
   (set-highlight "StatusLineNC" (get-color "surface2") (get-color "text")))
 
 (comment
+  (defn foo [?attr]
+    (if (= (type ?attr) "table")
+      (accumulate [result ""
+                   i n (ipairs ?attr)]
+        (.. result n))
+      "nothing"))
+  (foo ["foo" "bar"])
+  (foo)
+  (set-highlight "StatusLineNC" "rebeccapurple" "#c0ff33" ["inverse" "undercurl"])
+  (set-highlight "StatusLine" "rebeccapurple" "#c0ffee" ["bold" "undercurl"]) 
+  (accumulate [opts ""
+               i n (ipairs ["foo" "bar" "baz" "qux"])]
+    (.. opts n ",")) ; "foo,bar,baz,qux,"
   (vim.api.nvim_get_option "termguicolors")
   (vim.api.nvim_set_var "colors_name" "catppuccin")
   (get-color "rosewater"))
