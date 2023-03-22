@@ -63,6 +63,9 @@
       (= "dark" bg)
       (. macchiato color))))
 
+;; need to use `nvim.ex.hi` here (equivalent to `:hi`) instead of
+;; `vim.cmd` because the latter didn't work for some dumb reason
+;; and also the documentation for the latter is insane
 (defn set-highlight [group fg bg ?attr]
   "Wrapper function to set highlight groups"
   (let [group group
@@ -71,8 +74,11 @@
     (nvim.ex.hi (.. group " guifg=" fg " guibg=" bg))))
 
 (defn init []
+  (vim.api.nvim_set_var "colors_name" "catppuccin")
   (set-highlight "StatusLine" (get-color "text") (get-color "overlay2"))
   (set-highlight "StatusLineNC" (get-color "surface2") (get-color "text")))
 
 (comment
-         (get-color "rosewater"))
+  (vim.api.nvim_get_option "termguicolors")
+  (vim.api.nvim_set_var "colors_name" "catppuccin")
+  (get-color "rosewater"))
