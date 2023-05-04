@@ -43,11 +43,10 @@ local function set_highlight(group, fg, bg, _3fattr)
 end
 _2amodule_2a["set-highlight"] = set_highlight
 local function init()
-  vim.api.nvim_set_option("background", "light")
   nvim.ex.hi("clear")
   vim.api.nvim_set_var("colors_name", "catppuccin")
   set_highlight("Normal", get_color("text"), get_color("base"))
-  set_highlight("Cursor", get_color("rosewater"), get_color("base"))
+  set_highlight("Cursor", get_color("NONE"), get_color("rosewater"))
   set_highlight("CursorLine", "NONE", get_color("surface0"))
   set_highlight("StatusLine", "foreground", "background", {"inverse"})
   set_highlight("StatusLineNC", get_color("overlay0"), "background", {"inverse"})
