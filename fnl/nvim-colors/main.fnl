@@ -81,7 +81,7 @@
   (nvim.ex.hi "clear")
   (vim.api.nvim_set_var "colors_name" "catppuccin")
   (set-highlight "Normal" (get-color "text") (get-color "base"))
-  (set-highlight "Cursor" (get-color "NONE") (get-color "rosewater"))
+  (set-highlight "Cursor" "NONE" (get-color "rosewater"))
   (set-highlight "CursorLine" "NONE" (get-color "surface0"))
   (set-highlight "StatusLine" "foreground" "background" ["inverse"])
   (set-highlight "StatusLineNC" (get-color "overlay0") "background" ["inverse"])
