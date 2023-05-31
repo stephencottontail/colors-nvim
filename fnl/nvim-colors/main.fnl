@@ -1,6 +1,6 @@
 (module nvim-colors.main
   {autoload {nvim aniseed.nvim
-             colors utils.colors}})
+             u utils}})
 
 (def catppuccin [{:rosewater "#dc8a78"
                   :flamingo "#dd7878"
@@ -56,99 +56,86 @@
                   :mantle "#1e2030"
                   :crust "#181926"}])
 
-  ;; need to use `nvim.ex.hi` here (equivalent to `:hi`) instead of
-  ;; `vim.cmd` because the latter didn't work for some dumb reason
-  ;; and also the documentation for the latter is insane
-  (defn set-highlight [group fg bg ?attr]
-    "Wrapper function to set highlight group GROUP with
-    foreground color FG, background color BG, and an optional
-    table of attributes ATTR (see `:help highlight-args`)" 
-    (let [opts (if (= (type ?attr) "table")
-                 (accumulate [opts ""
-                              i n (ipairs ?attr)]
-                   (.. opts n ","))
-                 "NONE")]
-      (nvim.ex.hi (.. group " guifg=" fg " guibg=" bg " gui=" opts))))
+(defn init []
+  (nvim.ex.hi "clear")
+  (vim.api.nvim_set_var "colors_name" "catppuccin")
+  (u.set-highlight "Normal" (u.get-color "text") (u.get-color "base"))
+  (u.set-highlight "Cursor" "NONE" (u.get-color "rosewater"))
+  (u.set-highlight "CursorLine" "NONE" (u.get-color "surface0"))
+  (u.set-highlight "StatusLine" "foreground" "background" ["inverse"])
+  (u.set-highlight "StatusLineNC" (u.get-color "overlay0") "background" ["inverse"])
+  (u.set-highlight "Search" "NONE" "NONE")
+  (u.set-highlight "IncSearch" (u.get-color "base") (u.get-color "blue"))
 
-  (defn init []
-    (nvim.ex.hi "clear")
-    (vim.api.nvim_set_var "colors_name" "catppuccin")
-    (set-highlight "Normal" (colors.get-color "text") (colors.get-color "base"))
-    (set-highlight "Cursor" "NONE" (colors.get-color "rosewater"))
-    (set-highlight "CursorLine" "NONE" (colors.get-color "surface0"))
-    (set-highlight "StatusLine" "foreground" "background" ["inverse"])
-    (set-highlight "StatusLineNC" (colors.get-color "overlay0") "background" ["inverse"])
-    (set-highlight "Search" "NONE" "NONE")
-    (set-highlight "IncSearch" (colors.get-color "base") (colors.get-color "blue"))
+  ;; syntax elements
+  (u.set-highlight "Constant" "NONE" "NONE")
+  (u.set-highlight "Character" "NONE" "NONE")
+  (u.set-highlight "Statement" "NONE" "NONE")
+  (u.set-highlight "Conditional" "NONE" "NONE")
+  (u.set-highlight "Repeat" "NONE" "NONE")
+  (u.set-highlight "Label" "NONE" "NONE")
+  (u.set-highlight "Operator" "NONE" "NONE")
+  (u.set-highlight "Keyword" "NONE" "NONE")
+  (u.set-highlight "Comment" (u.get-color "mauve") "NONE")
+  (u.set-highlight "String" (u.get-color "green") "NONE")
+  (u.set-highlight "StringDelimiter" (u.get-color "green") "NONE")
+  (u.set-highlight "Number" (u.get-color "peach") "NONE")
+  (u.set-highlight "Boolean" (u.get-color "peach") "NONE")
+  (u.set-highlight "Float" (u.get-color "peach") "NONE")
+  (u.set-highlight "Function" (u.get-color "lavender") "NONE")
+  (u.set-highlight "Identifier" (u.get-color "lavender") "NONE")
+  (u.set-highlight "vimOption" (u.get-color "lavender") "NONE")
+  (u.set-highlight "FennelDefine" "NONE" "NONE")
+  (u.set-highlight "FennelMacro" (u.get-color "lavender") "NONE")
+  (u.set-highlight "FennelLuaFunction" (u.get-color "lavender") "NONE"))
 
-    ;; syntax elements
-    (set-highlight "Constant" "NONE" "NONE")
-    (set-highlight "Character" "NONE" "NONE")
-    (set-highlight "Statement" "NONE" "NONE")
-    (set-highlight "Conditional" "NONE" "NONE")
-    (set-highlight "Repeat" "NONE" "NONE")
-    (set-highlight "Label" "NONE" "NONE")
-    (set-highlight "Operator" "NONE" "NONE")
-    (set-highlight "Keyword" "NONE" "NONE")
-    (set-highlight "Comment" (colors.get-color "mauve") "NONE")
-    (set-highlight "String" (colors.get-color "green") "NONE")
-    (set-highlight "StringDelimiter" (colors.get-color "green") "NONE")
-    (set-highlight "Number" (colors.get-color "peach") "NONE")
-    (set-highlight "Boolean" (colors.get-color "peach") "NONE")
-    (set-highlight "Float" (colors.get-color "peach") "NONE")
-    (set-highlight "Function" (colors.get-color "lavender") "NONE")
-    (set-highlight "Identifier" (colors.get-color "lavender") "NONE")
-    (set-highlight "vimOption" (colors.get-color "lavender") "NONE")
-    (set-highlight "FennelDefine" "NONE" "NONE")
-    (set-highlight "FennelMacro" (colors.get-color "lavender") "NONE")
-    (set-highlight "FennelLuaFunction" (colors.get-color "lavender") "NONE"))
-
-  (comment
-    (colors.get-color "rosewater")
-    (defn foo [?attr]
-      (if (= (type ?attr) "table")
-        (accumulate [result ""
-                     i n (ipairs ?attr)]
-          (.. result n))
-        "nothing"))
-    (foo ["foo" "bar"])
-    (foo)
-    (set-highlight "StatusLineNC" "rebeccapurple" "#c0ff33" ["inverse" "undercurl"])
-    (set-highlight "StatusLine" "rebeccapurple" "#c0ffee" ["bold" "undercurl"]) 
-    (accumulate [opts ""
-                 i n (ipairs ["foo" "bar" "baz" "qux"])]
-      (.. opts n ",")) ; "foo,bar,baz,qux,"
-    (vim.api.nvim_set_option "background" "light")
-    (nvim.ex.hi "clear") ; nil
-    (vim.api.nvim_get_option "termguicolors")
-    (vim.api.nvim_set_var "colors_name" "catppuccin")
-    (colors.get-color "rosewater") ; "dark"
-    (colors.get-color "rosewater" catppuccin) ; "#f4dbd6"
-    (. (. catppuccin 2) "rosewater") ; "#f4dbd6"
-; {:base "#24273a"
-;  :blue "#8aadf4"
-;  :crust "#181926"
-;  :flamingo "#f0c6c6"
-;  :green "#a6da85"
-;  :lavender "#b7bdf8"
-;  :mantle "#1e2030"
-;  :maroon "#ee99a0"
-;  :mauve "#c6a0f6"
-;  :overlay0 "#6e738d"
-;  :overlay1 "#8087a2"
-;  :overlay2 "#939ab7"
-;  :peach "#f5a97f"
-;  :pink "#f5bde6"
-;  :red "#ed8796"
-;  :rosewater "#f4dbd6"
-;  :sapphire "#7dc4e4"
-;  :sky "#91d7e3"
-;  :subtext0 "#a5adcb"
-;  :subtext1 "#b8c0e0"
-;  :surface0 "#363a4f"
-;  :surface1 "#494d64"
-;  :surface2 "#5b6078"
-;  :teal "#8bd5ca"
-;  :text "#cad3f5"
-;  :yellow "#eed49f"}
-    )
+(comment
+  (u.set-highlight "String" (u.get-color "mauve" catppuccin) "NONE")
+  (u.get-color "rosewater")
+  (defn foo [?attr]
+    (if (= (type ?attr) "table")
+      (accumulate [result ""
+                   i n (ipairs ?attr)]
+        (.. result n))
+      "nothing"))
+  (foo ["foo" "bar"])
+  (foo)
+  (u.set-highlight "StatusLineNC" "rebeccapurple" "#c0ff33" ["inverse" "undercurl"])
+  (u.set-highlight "StatusLine" "rebeccapurple" "#c0ffee" ["bold" "undercurl"]) 
+  (accumulate [opts ""
+               i n (ipairs ["foo" "bar" "baz" "qux"])]
+    (.. opts n ",")) ; "foo,bar,baz,qux,"
+  (vim.api.nvim_set_option "background" "light")
+  (nvim.ex.hi "clear") ; nil
+  (vim.api.nvim_get_option "termguiu")
+  (vim.api.nvim_set_var "u_name" "catppuccin")
+  (u.get-color "rosewater") ; "dark"
+  (u.get-color "rosewater" catppuccin) ; "#f4dbd6"
+  (. (. catppuccin 2) "rosewater") ; "#f4dbd6"
+  ; {:base "#24273a"
+  ;  :blue "#8aadf4"
+  ;  :crust "#181926"
+  ;  :flamingo "#f0c6c6"
+  ;  :green "#a6da85"
+  ;  :lavender "#b7bdf8"
+  ;  :mantle "#1e2030"
+  ;  :maroon "#ee99a0"
+  ;  :mauve "#c6a0f6"
+  ;  :overlay0 "#6e738d"
+  ;  :overlay1 "#8087a2"
+  ;  :overlay2 "#939ab7"
+  ;  :peach "#f5a97f"
+  ;  :pink "#f5bde6"
+  ;  :red "#ed8796"
+  ;  :rosewater "#f4dbd6"
+  ;  :sapphire "#7dc4e4"
+  ;  :sky "#91d7e3"
+  ;  :subtext0 "#a5adcb"
+  ;  :subtext1 "#b8c0e0"
+  ;  :surface0 "#363a4f"
+  ;  :surface1 "#494d64"
+  ;  :surface2 "#5b6078"
+  ;  :teal "#8bd5ca"
+  ;  :text "#cad3f5"
+  ;  :yellow "#eed49f"}
+  )

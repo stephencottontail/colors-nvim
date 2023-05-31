@@ -1,4 +1,5 @@
-(module utils)
+(module utils
+  {autoload {nvim aniseed.nvim}})
 
 ;; need to use `nvim.ex.hi` here (equivalent to `:hi`) instead of
 ;; `vim.cmd` because the latter didn't work for some dumb reason

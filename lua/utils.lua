@@ -1,4 +1,4 @@
-local _2afile_2a = "fnl/utils/colors.fnl"
+local _2afile_2a = "fnl/utils.fnl"
 local _2amodule_name_2a = "utils"
 local _2amodule_2a
 do
@@ -10,6 +10,9 @@ do
   _2amodule_2a["aniseed/locals"] = {}
   _2amodule_locals_2a = (_2amodule_2a)["aniseed/locals"]
 end
+local autoload = (require("aniseed.autoload")).autoload
+local nvim = autoload("aniseed.nvim")
+do end (_2amodule_locals_2a)["nvim"] = nvim
 local function set_highlight(group, fg, bg, _3fattr)
   local opts
   if (type(_3fattr) == "table") then
